@@ -4,17 +4,16 @@ const {getPGPool} = require("./db_pool");
 
 async function performQuery(queryData)
 {
-    const {pool} = getPGPool();
+    const pool = getPGPool();
+    const client = await pool.connect();
     try {
-        const result = await pool.query(queryData);
-        pool.release();
-        return result;
+        return await client.query(queryData);
     } catch (error) {
         console.error(`Error executing query: {$error}`);
-        // Close the connection pool
-        pool.end();
-        // Throw the error to be caught by the caller
         throw error;
+    }
+    finally {
+        client.release();
     }
 }
 
