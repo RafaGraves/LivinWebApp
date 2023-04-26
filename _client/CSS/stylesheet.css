@@ -1,0 +1,26 @@
+h1{
+    font-family:'Montserrat', sans-serif;
+}
+
+
+.hero-container{
+    background-color:  #F4EEE0;
+}
+.img-fluid:hover{
+    opacity: 0.5;
+}
+.hero-container{
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 800;
+}
+.h2{
+    font-family:'Montserrat', sans-serif;
+}
+.quienes-somos-icon{
+    width: 40px;
+    height: 40px;
+}
+.footer-social-media-icon{
+    width: 60px;
+    height: 24px;
+}
