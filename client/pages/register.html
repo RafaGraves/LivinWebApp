@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Regístrate en Living</title>
+    <link rel="stylesheet" href="../css/register.css">
+    <script type="text/javascript" src="../scripts/register.js"></script>
+</head>
+<body>
+<div class="register">
+    <header class="register-header">
+        <h2>Regístrate con nosotros</h2>
+    </header>
+    <form id="registrationForm">
+        <div class="form-group">
+            <div class="col">
+                <input type="text" name="firstname" required>
+                <label for="firstname">Nombre</label>
+            </div>
+            <div class="col">
+                <input type="text" name="lastname" required>
+                <label for="lastname">Apellidos</label>
+            </div>
+        </div>
+
+        <div class="form-group form-group--single">
+            <div class="col2">
+
+                <input type="password" id="password" name="password" required>
+                <label for="password">Password:</label>
+            </div>
+        </div>
+        <div class="form-group form-group--single">
+            <div class="col2">
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <label for="confirmPassword">Confirm Password:</label>
+            </div>
+        </div>
+        <div class="form-group form-group--single">
+            <div class="col2">
+                <input type="tel" name="phone" pattern="\d{2}-\d{4}-\d{4}" maxlength="12"
+                       oninput="formatPhoneNumber(this)" required>
+                <label for="phone">Número telefónico</label>
+                <div id="phone-message" class="correct-message"></div>
+            </div>
+        </div>
+        <div class="form-group form-group--single">
+            <div class="col2">
+                <input type="email" name="email" id="email" required>
+                <label for="email">e-mail</label>
+                <div id="email-error" class="error-message"></div>
+            </div>
+        </div>
+        <input class="submit-button" type="submit" value="Submit">
+    </form>
+
+
+    <script>
+        // add event listeners to all input fields
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                if (input.value !== '') {
+                    input.classList.add('has-value');
+                } else {
+                    input.classList.remove('has-value');
+                }
+            });
+        });
+
+        const form = document.getElementById('registrationForm');
+        form.addEventListener('submit', validateForm);
+    </script>
+</div>
+</body>
+</html>
