@@ -2,7 +2,10 @@ h1{
     font-family:'Montserrat', sans-serif;
 }
 
-
+.livin-svg-placeholder{
+    width: 40px;
+    height: 40px;
+}
 .hero-container{
     background-color:  #F4EEE0;
 }
