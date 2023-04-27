@@ -14,18 +14,16 @@
     <form id="registrationForm">
         <div class="form-group">
             <div class="col">
-                <input type="text" name="firstname" required>
+                <input type="text" name="firstname" id="firstname" required>
                 <label for="firstname">Nombre</label>
             </div>
             <div class="col">
-                <input type="text" name="lastname" required>
+                <input type="text" name="lastname" id="lastname" required>
                 <label for="lastname">Apellidos</label>
             </div>
         </div>
-
         <div class="form-group form-group--single">
             <div class="col2">
-
                 <input type="password" id="password" name="password" required>
                 <label for="password">Password:</label>
             </div>
@@ -38,7 +36,7 @@
         </div>
         <div class="form-group form-group--single">
             <div class="col2">
-                <input type="tel" name="phone" pattern="\d{2}-\d{4}-\d{4}" maxlength="12"
+                <input type="tel" name="phone" id="phone" pattern="\d{2}-\d{4}-\d{4}" maxlength="12"
                        oninput="formatPhoneNumber(this)" required>
                 <label for="phone">Número telefónico</label>
                 <div id="phone-message" class="correct-message"></div>
