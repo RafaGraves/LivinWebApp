@@ -1,7 +1,36 @@
-function validateForm(event) {
+function validatePassword(input) {
+    // Must be of at least 6 digits
+    const pswInputLength = input.value.length;
+    const pswLenError = document.getElementById('psw-error');
+    pswLenError.innerText = '';
+    if (pswInputLength < 6) {
+        pswLenError.style.visibility = 'block';
+        pswLenError.innerText = 'Escribe una constraseña de al menos 6 caracteres';
+        throw Error('invalid password');
+    }
+}
 
-    event.preventDefault(); // Prevent default form submission behavior
+function validateMatchingPasswords(input0, input1) {
+    const pswError = document.getElementById('conf-psw-error');
+    pswError.innerText = '';
+    if (input0.value !== input1.value) {
+        pswError.innerText = 'Las contraseñas no coinciden';
+        throw Error('mismatching passwords');
+    }
+}
 
+function validatePhoneNumber(input) {
+    const phoneInput = document.getElementById('phone-message');
+    const phoneRegex = /^\d{2}-\d{4}-\d{4}$/;
+    phoneInput.innerText = '';
+    if (!phoneRegex.test(input.value)) {
+        phoneInput.className = 'error-message';
+        phoneInput.innerText = 'Escribe un número telefónico válido';
+        throw Error('invalid phone number');
+    }
+}
+
+function validateMail(input) {
     const emailInput = document.getElementById('email');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const emailError = document.getElementById('email-error');
@@ -9,10 +38,112 @@ function validateForm(event) {
     // Validate email
     if (!emailRegex.test(emailInput.value)) {
         emailError.innerText = 'Escribe un correo electrónico válido';
-        return; // Stop execution if email is invalid
+        throw Error('invalid mail');
     } else {
         emailError.innerText = '';
     }
+}
+
+async function validateForm(event) {
+    event.preventDefault();
+    const overlayBlock = document.getElementById('loading-overlay');
+    const registrationFormElement = document.getElementById('registrationForm');
+
+    async function hashPassword(password) {
+        const sha256 = window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
+
+        return new Promise((resolve, reject) => {
+            sha256.then(buffer => {
+                const hashArray = Array.from(new Uint8Array(buffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                resolve(hashHex);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+
+    try {
+        // Disable each form element
+        Array.from(registrationFormElement.elements).forEach((element) => {
+            element.disabled = true;
+        });
+        overlayBlock.style.display = 'block';
+
+        const pswInput = document.getElementById('password');
+        validatePassword(pswInput);
+
+        const pswConfirmation = document.getElementById('confirmPassword');
+        validateMatchingPasswords(pswInput, pswConfirmation);
+
+        const phNumber = document.getElementById('phone');
+        validatePhoneNumber(phNumber);
+
+        const email = document.getElementById('email');
+        validateMail(email);
+
+
+        const formDataJson = JSON.stringify({
+            name: document.getElementById('firstname').value,
+            lastname: document.getElementById('lastname').value,
+            password: await hashPassword(pswInput.value),
+            phone: phNumber.value,
+            email: email.value
+        });
+
+        fetch('http://localhost:5000/api/signup', {
+            method: 'POST',
+            body: formDataJson,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.indexOf('application/json') !== -1) {
+                    return response.json();
+                } else {
+                    throw new TypeError('Response from backend is not JSON');
+                }
+            })
+            .then(data => {
+                // Handle the API response here
+                console.log(data);
+                // Hide the loader here
+            })
+            .catch(error => {
+                // Handle errors here
+                console.error(error);
+                // Hide the loader here
+
+                Array.from(registrationFormElement.elements).forEach((element) => {
+                    element.disabled = false;
+                });
+                overlayBlock.style.display = 'none';
+            });
+
+    } catch (e) {
+        // Enable each element
+        Array.from(registrationFormElement.elements).forEach((element) => {
+            element.disabled = false;
+        });
+        overlayBlock.style.display = 'none';
+    }
+}
+
+function passwordChange(input) {
+    try {
+        validatePassword(input);
+    } catch (e) {
+       //  console.error(e);
+    }
+}
+
+function confPasswordChange(input) {
+    const pswError = document.getElementById('conf-psw-error');
+    console.log(pswError.innerText);
+    if (pswError.innerText !== '')
+        pswError.innerText = '';
 }
 
 function formatPhoneNumber(input) {
