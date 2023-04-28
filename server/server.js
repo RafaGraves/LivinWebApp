@@ -3,6 +3,8 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
 // Load .env file
 require('dotenv').config({path: __dirname + '/.env'});
@@ -22,36 +24,40 @@ server.set('view engine', 'ejs');
 
 server.use(logger('dev'));
 server.use(express.json());
-server.use(express.urlencoded({ extended: false }));
+server.use(express.urlencoded({extended: false}));
 server.use(cookieParser());
 server.use(express.static(path.join(__dirname, 'public')));
+server.use(bodyParser.json());
 
 server.use('/', indexRouter);
 server.use('/users', usersRouter);
-server.use('/api/signup', registerRouter);
+server.use('/api/signup', cors({
+    origin: 'http://localhost:63342',
+    methods: ['POST'],
+    allowedHeaders: ['Content-Type']
+}), registerRouter);
 server.use('/confirmation', confirmationRouter);
 
 // catch 404 and forward to error handler
-server.use(function(req, res, next) {
-  next(createError(404));
+server.use(function (req, res, next) {
+    next(createError(404));
 });
-
 
 
 // error handler
-server.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+server.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 
-server.listen(PORT, ()=>{
-  console.log(`R_ESTATE server running on port ${PORT}`);
+server.listen(PORT, () => {
+    console.log(`R_ESTATE server running on port ${PORT}`);
 })
 
 module.exports = server;
