@@ -15,9 +15,22 @@ h2{
 
 }
 
+.bked-error {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+    background-color: #da2d2d;
+    color: #ffffff;
+    width: 90%;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+    display: none;
+}
+
 .register {
     width: 670px;
-    height: 500px;
+    height: 600px;
     background-color: #F6F1F1;
     gap: 20px;
     pointer-events: auto;

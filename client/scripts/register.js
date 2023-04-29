@@ -44,6 +44,11 @@ function validateMail(input) {
     }
 }
 
+function mailProblem(message) {
+    const emailError = document.getElementById('email-error');
+    emailError.innerText = message;
+}
+
 async function validateForm(event) {
     event.preventDefault();
     const overlayBlock = document.getElementById('loading-overlay');
@@ -97,30 +102,43 @@ async function validateForm(event) {
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
-            .then(response => {
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.indexOf('application/json') !== -1) {
-                    return response.json();
-                } else {
-                    throw new TypeError('Response from backend is not JSON');
-                }
-            })
-            .then(data => {
-                // Handle the API response here
-                console.log(data);
-                // Hide the loader here
-            })
-            .catch(error => {
-                // Handle errors here
-                console.error(error);
-                // Hide the loader here
-
+        }).then(response => {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                return response.json();
+            } else {
+                throw new TypeError('Response from backend is not JSON');
+            }
+        }).then(data => {
+            console.log(data);
+            console.log(data.code);
+            console.log(typeof data.code);
+            switch (data.code) {
+                case 0:
+                    break;
+                case 3001:
+                    mailProblem('El correo que escribiste ya se encuentra registrado');
+                    throw TypeError('api');
+                case 3002:
+                    mailProblem('No se puede enviar el correo a la dirección proporcionada');
+                    throw TypeError('api');
+                case 3000:
+                    break;
+                default:
+                    break;
+            }
+        }).catch(error => {
+            if (error.message !== 'api') {
+                console.error('Error message:', error.message);
+                window.location.href = 'http://localhost:63342/LivinWebApp/client/pages/excep/oops.html?from=registration';
+            } else {
+                // Enable each element
                 Array.from(registrationFormElement.elements).forEach((element) => {
                     element.disabled = false;
                 });
                 overlayBlock.style.display = 'none';
-            });
+            }
+        });
 
     } catch (e) {
         // Enable each element
@@ -135,7 +153,7 @@ function passwordChange(input) {
     try {
         validatePassword(input);
     } catch (e) {
-       //  console.error(e);
+        //  console.error(e);
     }
 }
 
