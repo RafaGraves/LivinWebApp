@@ -54,7 +54,7 @@ router.post('/', async function (req, res, next) {
         const existResult = await performQuery(checkUsrExistsQuery);
 
         if (existResult.rowCount !== 0) {
-            return res.status(400).json(JSONError(3001, 'e-mail already registered'));
+            return res.status(200).json(JSONError(3001, 'e-mail already registered'));
         }
 
         // Add the user to the db
@@ -103,7 +103,7 @@ router.post('/', async function (req, res, next) {
 
             await mailerTransporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
-                    return res.status(400).json(JSONError(3002, error))
+                    return res.status(200).json(JSONError(3002, error))
                 } else {
                     console.log(`Email sent to ${regData.email}:${info.response}`);
                 }
@@ -123,10 +123,10 @@ router.post('/', async function (req, res, next) {
         }
 
     } catch (error) {
-        return res.status(400).json(JSONError(-2000, error.message));
+        return res.status(200).json(JSONError(-2000, error.message));
     }
 
-    return res.status(400).json(JSONError(-500, 'Unknown'));
+    return res.status(200).json(JSONError(-500, 'Unknown'));
 });
 
 module.exports = router;
