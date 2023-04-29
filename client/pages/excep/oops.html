@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Oops, Out of Service</title>
+    <style>body {
+        background-color: #f7f7f7;
+    }
+
+    .container {
+        text-align: center;
+        margin-top: 100px;
+    }
+
+    h1 {
+        font-size: 5em;
+        margin-bottom: 0;
+        color: #e74c3c;
+    }
+
+    h2 {
+        font-size: 2em;
+        margin-top: 0;
+        color: #34495e;
+    }
+
+    p {
+        font-size: 1.2em;
+        margin-top: 20px;
+        color: #7f8c8d;
+    }
+
+    button {
+        font-size: 1em;
+        margin-top: 40px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none;
+        background-color: #3498db;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #2980b9;
+    }</style>
+</head>
+<body>
+<div class="container">
+    <h1>¡Ups!</h1>
+    <h2>Nuestro servicio no se encuentra disponible.</h2>
+    <p>Nos disculpamos por las incoveniencias.</p>
+    <button id="refresh-btn">Regresar</button>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromValue = urlParams.get('from');
+
+    const redirections = new Map([
+        ['registration', function() { return 'http://localhost:63342/LivinWebApp/client/pages/register.html'; }],
+        ['home', function() { return 'http://localhost:63342/LivinWebApp/client/index.html'; }]
+    ]);
+
+    let redirectTo = '';
+    if (redirections.has(fromValue)) {
+        redirectTo = redirections.get(fromValue)();
+    } else {
+        redirectTo = redirections.get('home')();
+    }
+
+    document.getElementById('refresh-btn').addEventListener('click', function () {
+        window.location.href = redirectTo;
+    });
+</script>
+</body>
+</html>
