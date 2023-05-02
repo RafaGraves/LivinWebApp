@@ -32,7 +32,7 @@ server.use(bodyParser.json());
 server.use('/', indexRouter);
 server.use('/users', usersRouter);
 server.use('/api/signup', cors({
-    origin: 'http://localhost:63342',
+    origin: 'http://localhost:63343',
     methods: ['POST'],
     allowedHeaders: ['Content-Type']
 }), registerRouter);
