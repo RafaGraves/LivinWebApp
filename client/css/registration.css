@@ -3,16 +3,23 @@ body {
     font-family: 'Montserrat', sans-serif;
     text-align: center;
 }
-h2{
+
+h2 {
     font-family: 'Montserrat', sans-serif;
 }
-.register-header {
+
+.registration-header {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
-    background-color: #FFF4E0;
+    background-color: rgba(255, 235, 196, 0.34);
     width: 100%;
     border-bottom: rgb(157, 157, 157) solid 2px;
-
+    margin: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 12%;
+    padding-top: 25px;
 }
 
 .bked-error {
@@ -28,35 +35,16 @@ h2{
     display: none;
 }
 
-.register {
-    width: 670px;
-    height: 600px;
-    background-color: #F6F1F1;
-    gap: 20px;
-    pointer-events: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    box-sizing: border-box;
-    box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
-    border: rgba(83, 89, 122, 0.84) solid 1px;
-    border-radius: 10px;
-    outline: 0;
-    margin: 0 auto;
-    position: fixed;
-    z-index: 20;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-
 
 form {
     display: flex;
     flex-direction: column;
     max-width: 400px;
     margin: 0 auto;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 label {
@@ -69,7 +57,7 @@ label {
     color: #333886;
 }
 
-input {
+.reg-form-input {
     display: block;
     border: none;
     background-color: transparent;
@@ -80,13 +68,13 @@ input {
     box-sizing: border-box;
 }
 
-input:focus, input:valid {
+.reg-form-input:focus, input:valid {
     outline: none;
     border-bottom: 1px solid #002cff;
 }
 
 
-input:focus + label {
+.reg-form-input:focus + label {
     top: -10px;
     left: 10px;
     font-size: 15px;
@@ -95,7 +83,7 @@ input:focus + label {
     color: rgba(0, 21, 255, 0.71);
 }
 
-input.has-value + label {
+.reg-form-input.has-value + label {
     top: -10px;
     left: 10px;
     font-size: 15px;
@@ -104,11 +92,11 @@ input.has-value + label {
 }
 
 
-input.has-value {
+.reg-form-input.has-value {
     border-bottom: 1px solid #3a6b27;
 }
 
-input.has-value:focus + label {
+.reg-form-input.has-value:focus + label {
     top: -10px;
     left: 10px;
     font-size: 15px;
@@ -156,11 +144,12 @@ input.has-value:focus + label {
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
 }
+
 .submit-button:hover {
     background-color: #248af8;
 }
 
-.submit-button::before{
+.submit-button::before {
     width: 100%;
     height: 100%;
     background-color: #fff;
@@ -186,7 +175,7 @@ input.has-value:focus + label {
     margin-left: 5px;
 }
 
-.form-loading-overlay{
+.form-loading-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -211,7 +200,66 @@ input.has-value:focus + label {
     transform: translate(-50%, -50%);
 }
 
+.ok-image {
+    width: 100%;
+    margin: 0;
+    position: absolute;
+    left: 0;
+    top: -32px;
+    height: 12%;
+}
+.ok-button {
+    position: absolute;
+    bottom: 10px; /* Position the button 10px from the bottom */
+    width: 85%; /* Set the width of the button */
+    height: 45px; /* Set the height of the button */
+    background-color: rgb(76, 175, 80); /* Set the background color of the button */
+    color: white; /* Set the text color of the button */
+    border: none; /* Remove the border of the button */
+    border-radius: 10px; /* Add rounded corners to the button */
+    cursor: pointer; /* Change the cursor to a pointer on hover */
+    left: 50%;
+    transform: translateX(-50%);
+}
+.ok-button:hover {
+    position: absolute;
+    bottom: 10px; /* Position the button 10px from the bottom */
+    width: 85%; /* Set the width of the button */
+    height: 45px; /* Set the height of the button */
+    background-color: rgb(100, 189, 104); /* Set the background color of the button */
+    color: white; /* Set the text color of the button */
+    border: none; /* Remove the border of the button */
+    border-radius: 5px; /* Add rounded corners to the button */
+    cursor: pointer; /* Change the cursor to a pointer on hover */
+    left: 50%;
+    transform: translateX(-50%);
+}
+.ok-modal h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 28px;
+}
+.ok-modal h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+}
+.ok-modal h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    position: absolute;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
