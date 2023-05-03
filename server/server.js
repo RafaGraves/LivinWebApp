@@ -11,7 +11,8 @@ require('dotenv').config({path: __dirname + '/.env'});
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const registerRouter = require('./routes/register')
+const registrationRouter = require('./routes/registration')
+const resendRegistrationRouter = require('./routes/resend_registration')
 const confirmationRouter = require('./routes/confirmation')
 
 const PORT = parseInt(process.env.NODE_SERVER_PORT, 10) || 4500;
@@ -29,13 +30,13 @@ server.use(cookieParser());
 server.use(express.static(path.join(__dirname, 'public')));
 server.use(bodyParser.json());
 
-server.use('/', indexRouter);
 server.use('/users', usersRouter);
 server.use('/api/signup', cors({
-    origin: 'http://localhost:63343',
+    origin: process.env.FRONTEND_CORS,
     methods: ['POST'],
     allowedHeaders: ['Content-Type']
-}), registerRouter);
+}), registrationRouter);
+server.use('/signup/resend', resendRegistrationRouter);
 server.use('/confirmation', confirmationRouter);
 
 // catch 404 and forward to error handler

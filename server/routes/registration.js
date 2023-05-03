@@ -25,7 +25,6 @@ const mailerTransporter = nodemailer.createTransport({
     }
 });
 
-
 router.post('/', async function (req, res, next) {
     const regData = req.body;
 
@@ -35,15 +34,10 @@ router.post('/', async function (req, res, next) {
     if (!regValidationSchema(regData)) {
         return res.status(400).json(JSONError(3000, 'Request data has the wrong format'));
     }
-
     const requestEmail = regData.email;
-
     // The user ID will be the first 16-bytes of the hashed email
     const userId = await generateHashFromString(requestEmail);
-
-
     try {
-
         // Check if the mail exists on the db
         const checkUsrExistsQuery = {
             name: 'checkUsrExistsQuery',
@@ -83,7 +77,6 @@ router.post('/', async function (req, res, next) {
 
             // Load the template file
             let mailTemplateContents = fs.readFileSync(path.resolve('server/templates/registration_email.html'), {encoding: 'utf8'});
-
 
             const confirmationLink = process.env.THIS_HOST + '/confirmation/' + hashedURL;
 
