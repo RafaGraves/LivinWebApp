@@ -3,7 +3,6 @@ const { Pool } = require('pg')
 let pgPool = null;
 
 function createPGPool() {
-    console.log(process.env.PG_HOST);
     return new Pool({
         host: process.env.PG_HOST,
         port: parseInt(process.env.PG_PORT, 10) || 5432,
