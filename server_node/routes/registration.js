@@ -102,7 +102,7 @@ router.post('/', async function (req, res, next) {
                 }
             });
 
-            return res.status(200).json(JSON.stringify({code: 0, message: 'success'}));
+            return res.status(200).json({code: 0, message: 'success'});
 
         } catch (error) {
             const deleteUserQuery = {

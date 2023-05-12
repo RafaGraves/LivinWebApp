@@ -1,28 +1,12 @@
 {
-  "name": "restate",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
-  },
-  "dependencies": {
-    "ajv": "^8.12.0",
-    "body-parser": "^1.20.2",
-    "cookie-parser": "~1.4.4",
-    "cors": "^2.8.5",
-    "crypto": "^1.0.1",
-    "debug": "~2.6.9",
-    "dotenv": "^16.0.3",
-    "ejs": "^3.1.9",
-    "express": "^4.18.2",
-    "express-session": "^1.17.3",
-    "http-errors": "~1.6.3",
-    "morgan": "~1.9.1",
-    "nodemailer": "^6.9.1",
-    "pg": "^8.10.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
-  }
+    "private": true,
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "axios": "^1.1.2",
+        "laravel-vite-plugin": "^0.7.2",
+        "vite": "^4.0.0"
+    }
 }

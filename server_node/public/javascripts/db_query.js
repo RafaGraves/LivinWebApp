@@ -1,13 +1,13 @@
 // General query
 
-const {getPGPool} = require("./db_pool");
+const {getMYSQLPool} = require("./db_pool");
 
-async function performQuery(queryData)
+async function performQuery(statement, values)
 {
-    const pool = getPGPool();
+    const pool = getMYSQLPool();
     const client = await pool.connect();
     try {
-        return await client.query(queryData);
+        return await client.query(statement, values);
     } catch (error) {
         console.error(`Error executing query: {$error}`);
         throw error;

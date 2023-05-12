@@ -45,9 +45,9 @@
 </head>
 <body>
 <div class="container">
-    <h1>Email Resent!</h1>
-    <p>Your email has been resent. Check your inbox and spam folder.</p>
-    <button><a href="../index.html">Back to Home</a></button>
+    <h1>{{ $fn }} {{ $ln }}. Correo de confirmación reenviado </h1>
+    <p>Tu correo de confirmación se ha reenviado. {{ $fn }}, Revisa tu buzón de entrada o tu carpeta de spam.</p>
+    <button><a href="{{ $url }}/index.html">Back to Home</a></button>
 </div>
 </body>
 </html>

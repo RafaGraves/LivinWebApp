@@ -87,7 +87,7 @@ async function validateForm(event) {
             phone: phNumber.value,
             email: email.value
         });
-        fetch('http://localhost:4000/api/signup', {
+        await fetch('http://localhost:4000/api/signup', {
             method: 'POST',
             body: formDataJson,
             headers: {
