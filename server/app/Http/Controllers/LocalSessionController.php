@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Session;
 use App\Models\UserLog;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -19,7 +20,7 @@ class LocalSessionController extends Controller
 
     protected string $nullUser = '000000000000000000000000000000000000000000000000000000000000000';
 
-    public function create(Request $request): \Illuminate\Http\JsonResponse
+    public function create(Request $request): JsonResponse
     {
         $token = Str::random(64);
 
@@ -43,7 +44,8 @@ class LocalSessionController extends Controller
             $success = $sessionDB->save();
 
             return response()->json([
-                'success' => (int)$success
+                'success' => (int)$success,
+                'token' => $token
             ])->header('Authorization', 'Bearer ' . $token, 180);
         } else return response()->json([
             'success' => 0
