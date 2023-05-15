@@ -1,11 +1,10 @@
-function validatePassword(input: HTMLInputElement) {
+function validatePassword(input: HTMLInputElement, inputError: HTMLDivElement) {
     // Must be of at least 6 digits
     const pswInputLength = input.value.length;
-    const pswLenError = document.getElementById('psw-error') as HTMLDivElement;
-    pswLenError.innerText = '';
+    inputError.innerText = '';
     if (pswInputLength < 6) {
-        pswLenError.style.visibility = 'block';
-        pswLenError.innerText = 'Escribe una constraseña de al menos 6 caracteres';
+        inputError.style.visibility = 'block';
+        inputError.innerText = 'Escribe una constraseña de al menos 6 caracteres';
         throw Error('invalid password');
     }
 }
@@ -30,16 +29,14 @@ function validatePhoneNumber(input: HTMLInputElement) {
     }
 }
 
-function validateMail(input: HTMLInputElement) {
+function validateMail(input: HTMLInputElement, inputError: HTMLDivElement) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailError = document.getElementById('email-error') as HTMLDivElement;
-
     // Validate email
     if (!emailRegex.test(input?.value)) {
-        emailError.innerText = 'Escribe un correo electrónico válido';
+        inputError.innerText = 'Escribe un correo electrónico válido';
         throw Error('invalid mail');
     } else {
-        emailError.innerText = '';
+        inputError.innerText = '';
     }
 }
 
@@ -48,31 +45,12 @@ function mailProblem(message: string) {
     emailError.innerText = message;
 }
 
-function terminateRegistrationModalFromOK(_regModalContainer: HTMLDivElement) {
-    const modalContainer = document.querySelector("#modal-container");
-    _regModalContainer!.innerHTML = '';
-    modalContainer?.classList.add("out");
-    document.body.classList.remove("modal-active");
-}
 
-async function validateForm(event: Event) {
+async function validateRegistrationForm(event: Event) {
     event.preventDefault();
     const overlayBlock = document.getElementById('loading-overlay') as HTMLDivElement;
     const registrationFormElement = document.getElementById('registrationForm') as HTMLFormElement;
 
-    async function hashPassword(password: string): Promise<string> {
-        const sha256 = window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
-
-        return new Promise<string>((resolve, reject) => {
-            sha256.then(buffer => {
-                const hashArray = Array.from(new Uint8Array(buffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                resolve(hashHex);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
 
     try {
         // Disable each form element
@@ -82,7 +60,7 @@ async function validateForm(event: Event) {
         overlayBlock.style.display = 'block';
 
         const pswInput = document.getElementById('password') as HTMLInputElement;
-        validatePassword(pswInput);
+        validatePassword(pswInput, document.getElementById('psw-error') as HTMLDivElement);
 
         const pswConfirmation = document.getElementById('confirmPassword') as HTMLInputElement;
         validateMatchingPasswords(pswInput, pswConfirmation);
@@ -91,7 +69,7 @@ async function validateForm(event: Event) {
         validatePhoneNumber(phNumber);
 
         const email = document.getElementById('email') as HTMLInputElement;
-        validateMail(email);
+        validateMail(email, document.getElementById('email-error') as HTMLDivElement);
 
 
         const formDataJson = JSON.stringify({
@@ -102,25 +80,27 @@ async function validateForm(event: Event) {
             email: email.value
         });
 
-        await fetch('http://localhost:4000/api/signup', {
+        await fetch('http://livin.test:4000/api/session/registration', {
             method: 'POST',
             body: formDataJson,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + window.__server
             }
-        }).then(response => {
+        }).then(async (response) => {
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.indexOf('application/json') !== -1) {
-                return response.json();
-            } else {
-                throw new TypeError('Response from backend is not JSON');
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new LivinRequestExceptionHandler(response.status, (await response.json()) as ServerErrorResponse);
             }
         }).then(data => {
-            switch (data.code) {
+            switch (data.status) {
                 case 0:
                     // Everything ok
                     // Get the registration modal
-                    const registrationModalContainer = document.getElementById("registration-modal");
+                    const registrationModalContainer = document.getElementById("session-modal");
                     if (registrationModalContainer != null) {
                         // Clear its HTML Contents
                         registrationModalContainer.innerHTML = '';
@@ -137,25 +117,31 @@ async function validateForm(event: Event) {
                             '<h3>Aceptar</h3></div>';
                     }
                     break;
-                case 3001:
-                    mailProblem('El correo que escribiste ya se encuentra registrado');
-                    throw TypeError('api');
-                case 3002:
-                    mailProblem('No se puede enviar el correo a la dirección proporcionada');
-                    throw TypeError('api');
-                case 3000:
-                    // TODO: this
-                    break;
                 default:
                     break;
             }
         }).catch(error => {
-            if (error.message !== 'api') {
+            if (error instanceof LivinRequestExceptionHandler) {
+                const rError = error as LivinRequestExceptionHandler;
+                switch (rError.Response.status) {
+                    case 3001:
+                        mailProblem('El correo que escribiste ya se encuentra registrado');
+                        break;
+                    case 3002:
+                        mailProblem('No se puede enviar el correo a la dirección proporcionada');
+                        break;
+                    case 3000:
+                        // TODO: this
+                        break;
+                    default:
+                        console.log('DEFAULT \'' + rError.Response.status+'\'');
+                }
+            } else {
                 console.error(`Error message:  ${error.message}`);
                 // Send a click event to the modal container
                 // To remove the form HTML of the div
                 // And to 'hide' the form ad the overlay
-                // This event is being listened and set it up in registration_listener.ts
+                // This event is being listened and set it up in listeners.ts
                 // This is done, in order to prevent that the registration form is displayed
                 // when the user clicks 'Back' in the browser
                 const modalContainer = document.querySelector<HTMLDivElement>("#modal-container");
@@ -165,15 +151,12 @@ async function validateForm(event: Event) {
                     cancelable: true
                 });
                 modalContainer?.dispatchEvent(clickEvent);
-
                 window.location.href = 'excep/oops.html?from=home';
-            } else {
-                // Enable each element
-                Array.from(registrationFormElement.elements).forEach((element) => {
-                    (element as HTMLInputElement).disabled = false;
-                });
-                overlayBlock.style.display = 'none';
             }
+            Array.from(registrationFormElement.elements).forEach((element) => {
+                (element as HTMLInputElement).disabled = false;
+            });
+            overlayBlock.style.display = 'none';
         });
 
     } catch (e) {
@@ -187,7 +170,7 @@ async function validateForm(event: Event) {
 
 function passwordChange(input: HTMLInputElement) {
     try {
-        validatePassword(input);
+        validatePassword(input, document.getElementById('email-error') as HTMLDivElement);
     } catch (e) {
         //  console.error(e);
     }

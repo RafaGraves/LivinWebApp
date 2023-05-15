@@ -1,12 +1,10 @@
 "use strict";
-function validatePassword(input) {
-    // Must be of at least 6 digits
+function validatePassword(input, inputError) {
     const pswInputLength = input.value.length;
-    const pswLenError = document.getElementById('psw-error');
-    pswLenError.innerText = '';
+    inputError.innerText = '';
     if (pswInputLength < 6) {
-        pswLenError.style.visibility = 'block';
-        pswLenError.innerText = 'Escribe una constraseña de al menos 6 caracteres';
+        inputError.style.visibility = 'block';
+        inputError.innerText = 'Escribe una constraseña de al menos 6 caracteres';
         throw Error('invalid password');
     }
 }
@@ -28,58 +26,37 @@ function validatePhoneNumber(input) {
         throw Error('invalid phone number');
     }
 }
-function validateMail(input) {
+function validateMail(input, inputError) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailError = document.getElementById('email-error');
-    // Validate email
     if (!emailRegex.test(input?.value)) {
-        emailError.innerText = 'Escribe un correo electrónico válido';
+        inputError.innerText = 'Escribe un correo electrónico válido';
         throw Error('invalid mail');
     }
     else {
-        emailError.innerText = '';
+        inputError.innerText = '';
     }
 }
 function mailProblem(message) {
     const emailError = document.getElementById('email-error');
     emailError.innerText = message;
 }
-function terminateRegistrationModalFromOK(_regModalContainer) {
-    const modalContainer = document.querySelector("#modal-container");
-    _regModalContainer.innerHTML = '';
-    modalContainer?.classList.add("out");
-    document.body.classList.remove("modal-active");
-}
-async function validateForm(event) {
+async function validateRegistrationForm(event) {
     event.preventDefault();
     const overlayBlock = document.getElementById('loading-overlay');
     const registrationFormElement = document.getElementById('registrationForm');
-    async function hashPassword(password) {
-        const sha256 = window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
-        return new Promise((resolve, reject) => {
-            sha256.then(buffer => {
-                const hashArray = Array.from(new Uint8Array(buffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                resolve(hashHex);
-            }).catch(error => {
-                reject(error);
-            });
-        });
-    }
     try {
-        // Disable each form element
         Array.from(registrationFormElement.elements).forEach((element) => {
             element.disabled = true;
         });
         overlayBlock.style.display = 'block';
         const pswInput = document.getElementById('password');
-        validatePassword(pswInput);
+        validatePassword(pswInput, document.getElementById('psw-error'));
         const pswConfirmation = document.getElementById('confirmPassword');
         validateMatchingPasswords(pswInput, pswConfirmation);
         const phNumber = document.getElementById('phone');
         validatePhoneNumber(phNumber);
         const email = document.getElementById('email');
-        validateMail(email);
+        validateMail(email, document.getElementById('email-error'));
         const formDataJson = JSON.stringify({
             name: document.getElementById('firstname').value,
             lastname: document.getElementById('lastname').value,
@@ -87,30 +64,27 @@ async function validateForm(event) {
             phone: phNumber.value,
             email: email.value
         });
-        await fetch('http://localhost:4000/api/signup', {
+        await fetch('http://livin.test:4000/api/session/registration', {
             method: 'POST',
             body: formDataJson,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + window.__server
             }
-        }).then(response => {
+        }).then(async (response) => {
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.indexOf('application/json') !== -1) {
-                return response.json();
-            }
-            else {
-                throw new TypeError('Response from backend is not JSON');
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new LivinRequestExceptionHandler(response.status, (await response.json()));
             }
         }).then(data => {
-            switch (data.code) {
+            switch (data.status) {
                 case 0:
-                    // Everything ok
-                    // Get the registration modal
-                    const registrationModalContainer = document.getElementById("registration-modal");
+                    const registrationModalContainer = document.getElementById("session-modal");
                     if (registrationModalContainer != null) {
-                        // Clear its HTML Contents
                         registrationModalContainer.innerHTML = '';
-                        // Change the class to the ok modal
                         registrationModalContainer.removeAttribute('class');
                         registrationModalContainer.classList.add('ok-modal');
                         registrationModalContainer.innerHTML = '<div class=\"ok-image\">' +
@@ -121,27 +95,27 @@ async function validateForm(event) {
                             '<h3>Aceptar</h3></div>';
                     }
                     break;
-                case 3001:
-                    mailProblem('El correo que escribiste ya se encuentra registrado');
-                    throw TypeError('api');
-                case 3002:
-                    mailProblem('No se puede enviar el correo a la dirección proporcionada');
-                    throw TypeError('api');
-                case 3000:
-                    // TODO: this
-                    break;
                 default:
                     break;
             }
         }).catch(error => {
-            if (error.message !== 'api') {
+            if (error instanceof LivinRequestExceptionHandler) {
+                const rError = error;
+                switch (rError.Response.status) {
+                    case 3001:
+                        mailProblem('El correo que escribiste ya se encuentra registrado');
+                        break;
+                    case 3002:
+                        mailProblem('No se puede enviar el correo a la dirección proporcionada');
+                        break;
+                    case 3000:
+                        break;
+                    default:
+                        console.log('DEFAULT \'' + rError.Response.status + '\'');
+                }
+            }
+            else {
                 console.error(`Error message:  ${error.message}`);
-                // Send a click event to the modal container
-                // To remove the form HTML of the div
-                // And to 'hide' the form ad the overlay
-                // This event is being listened and set it up in registration_listener.ts
-                // This is done, in order to prevent that the registration form is displayed
-                // when the user clicks 'Back' in the browser
                 const modalContainer = document.querySelector("#modal-container");
                 const clickEvent = new MouseEvent('click', {
                     view: window,
@@ -151,17 +125,13 @@ async function validateForm(event) {
                 modalContainer?.dispatchEvent(clickEvent);
                 window.location.href = 'excep/oops.html?from=home';
             }
-            else {
-                // Enable each element
-                Array.from(registrationFormElement.elements).forEach((element) => {
-                    element.disabled = false;
-                });
-                overlayBlock.style.display = 'none';
-            }
+            Array.from(registrationFormElement.elements).forEach((element) => {
+                element.disabled = false;
+            });
+            overlayBlock.style.display = 'none';
         });
     }
     catch (e) {
-        // Enable each element
         Array.from(registrationFormElement.elements).forEach((element) => {
             element.disabled = false;
         });
@@ -170,10 +140,9 @@ async function validateForm(event) {
 }
 function passwordChange(input) {
     try {
-        validatePassword(input);
+        validatePassword(input, document.getElementById('email-error'));
     }
     catch (e) {
-        //  console.error(e);
     }
 }
 function confPasswordChange(input) {
