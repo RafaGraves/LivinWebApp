@@ -15,19 +15,19 @@ html.modal-active, body.modal-active {
     z-index: 1;
 }
 
-#modal-container.registrationButton {
+#modal-container.activeButton {
     transform: scaleY(0.01) scaleX(0);
     animation: unfoldIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }
-#modal-container.registrationButton .modal-background .modal {
+#modal-container.activeButton .modal-background .modal {
     transform: scale(0);
     animation: zoomIn 0.3s 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }
-#modal-container.registrationButton.out {
+#modal-container.activeButton.out {
     transform: scale(1);
     animation: unfoldOut 0.5s 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }
-#modal-container.registrationButton.out .modal-background .modal {
+#modal-container.activeButton.out .modal-background .modal {
     animation: zoomOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }
 #modal-container .modal-background {
@@ -51,6 +51,44 @@ html.modal-active, body.modal-active {
     position: relative;
 }
 
+#modal-container .modal-background .signin-modal {
+    width: 400px;
+    height: 350px;
+    background-color: #F6F1F1;
+    padding: 150px;
+    display: inline-block;
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: rgb(3, 9, 61) 0 5px 15px;
+    border: rgba(0, 57, 213, 0.13) solid 1px;
+    font-weight: 300;
+    position: relative;
+}
+
+#modal-container .modal-background .modal form {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    max-width: 350px;
+    margin: 0 auto;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#modal-container .modal-background .signin-modal form {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    max-width: 350px;
+    margin: 0 auto;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 #modal-container .modal-background .ok-modal {
     width: 450px;
     height: 300px;
@@ -61,6 +99,21 @@ html.modal-active, body.modal-active {
     box-sizing: border-box;
     box-shadow: rgb(3, 9, 61) 0 5px 15px;
     border: rgba(0, 57, 213, 0.13) solid 1px;
+
+    font-weight: 300;
+    position: relative;
+}
+
+#modal-container .modal-background .refresh-modal {
+    width: 450px;
+    height: 300px;
+    background-color: #fffaeb;
+    padding: 50px;
+    display: inline-block;
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: rgb(61, 56, 3) 0 5px 15px;
+    border: rgba(213, 178, 0, 0.13) solid 1px;
     font-weight: 300;
     position: relative;
 }
@@ -70,6 +123,7 @@ html.modal-active, body.modal-active {
     line-height: 25px;
     margin-bottom: 15px;
 }
+
 #modal-container .modal-background .modal p {
     font-size: 18px;
     line-height: 22px;

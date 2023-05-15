@@ -22,6 +22,33 @@ h2 {
     padding-top: 25px;
 }
 
+.signin-header {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    background-color: rgba(255, 232, 196, 0.63);
+    width: 100%;
+    border-bottom: rgb(157, 157, 157) solid 2px;
+    margin: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 75px;
+    padding-top: 25px;
+}
+
+.registration-header h2{
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    vertical-align: center;
+}
+
+
+.signin-header h2{
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    vertical-align: center;
+}
+
 .bked-error {
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
@@ -39,10 +66,11 @@ h2 {
 form {
     display: flex;
     flex-direction: column;
-    max-width: 400px;
+    width: 500px;
+    max-width: 500px;
     margin: 0 auto;
     position: absolute;
-    top: 20%;
+    top: 10%;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -245,6 +273,27 @@ label {
     font-weight: normal;
 }
 .ok-modal h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    position: absolute;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.refresh-modal h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 28px;
+}
+.refresh-modal h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+}
+.refresh-modal h3 {
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
     font-size: 18px;
