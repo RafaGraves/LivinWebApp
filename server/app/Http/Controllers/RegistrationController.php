@@ -6,7 +6,11 @@ use App\Mail\Confirmation;
 use App\Models\SignupMailConfirmation;
 use App\Models\UserData;
 use App\Models\Users;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -20,7 +24,7 @@ class RegistrationController extends Controller
 {
     use MakesHttpRequests;
 
-    public function registration(): \Illuminate\Http\JsonResponse
+    public function registration(): JsonResponse
     {
 
         $validator = Validator::make(
@@ -54,7 +58,7 @@ class RegistrationController extends Controller
 
         } catch (ValidationException $e) {
             if (in_array('REPEATED', $validator->errors()->get('email'), true)) {
-                return response()->json(['status' => '3001', 'message' => 'email already registered'], 422);
+                return response()->json(['status' => 3001, 'message' => 'email already registered'], 422);
             }
 
             return response()->json(['status' => 3000, 'message' => 'Wrong input format'], 422);
@@ -149,7 +153,7 @@ class RegistrationController extends Controller
         return view('operation_error', ['url' => env('APP_FRONTEND_URL', '')]);
     }
 
-    public function resend($url): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\Contracts\Foundation\Application
+    public function resend($url): View|\Illuminate\Foundation\Application|Factory|JsonResponse|Application
     {
         $userInformation = SignupMailConfirmation::query()
             ->selectRaw('url, usr_email AS em, usr2_nombre AS fn, usr2_apellido AS ln')
