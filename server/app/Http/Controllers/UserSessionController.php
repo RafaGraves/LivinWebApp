@@ -6,6 +6,7 @@ use App\Models\Session;
 use App\Models\UserData;
 use App\Models\UserLog;
 use App\Models\Users;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -35,6 +36,10 @@ class UserSessionController extends Controller
 
                 if ($userInfo['usr_passw'] !== $inputData['password']) {
                     return response()->json(['status' => 2001, 'message' => 'Wrong user data'], 422);
+                }
+
+                if ($userInfo['usr_verificado'] !== 1) {
+                    return response()->json(['status' => 2002, 'message' => 'Not verified'], 422);
                 }
 
                 // Get the authorization token
@@ -219,5 +224,23 @@ class UserSessionController extends Controller
 
     }
 
+    function names()
+    {
+        try {
+            $userId = $this->accessUserIdFromAuthToken();
+
+            $info = UserData::query()->where('id_usr', $userId)->select(['usr2_nombre', 'usr2_apellido'])->get()->first();
+
+            return response()->json(
+                [
+                    'name' => $info['usr2_nombre'],
+                    'lastname' => $info['usr2_apellido']
+                ]
+            );
+
+        } catch (Exception $e) {
+            return response()->json(['status' => 5000, 'message' => 'Unknown session'], 422);
+        }
+    }
 
 }
