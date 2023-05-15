@@ -7,6 +7,7 @@
 | -1001  | El contenido de la solicitud no es un objeto JSON          |
 | 2000   | El usuario no existe                                       |
 | 2001   | La contrasena no es correcta                               |
+| 2002   | El usuario no ha verificado su cuenta                      |
 | 3000   | El formato JSON de registro es erróneo                     |
 | 3001   | El email ya está registrado                                |
 | 3002   | El email no pudo ser enviado                               |
