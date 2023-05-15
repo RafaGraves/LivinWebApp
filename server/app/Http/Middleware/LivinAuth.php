@@ -20,12 +20,12 @@ class LivinAuth
      * Handle an incoming request.
      *
      * @param Request $request
-     * @param \Closure(Request): (Response) $next
+     * @param Closure(Request): (Response) $next
      * @return Response
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->header('Content-Type') != 'application/json') {
+        if ($request->header('Content-Type') != 'application/json' && $request->method() != 'GET') {
             return response()->json(
                 [
                     'status' => -1001,
@@ -88,7 +88,7 @@ class LivinAuth
                     return response()->json(
                         [
                             'status' => 4006,
-                            'message' => 'Session expired'
+                            'message' => 'Session expired USERAGENT'
                         ], 401);
                 }
 
