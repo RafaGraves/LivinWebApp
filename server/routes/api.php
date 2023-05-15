@@ -41,6 +41,9 @@ Route::middleware('livinAuth')->group(function () {
 
         Route::patch('/update',
             [UserSessionController::class, 'update']);
+
+        Route::get('/names',
+            [UserSessionController::class, 'names']);
     });
 
     Route::prefix('images')->group(function () {
