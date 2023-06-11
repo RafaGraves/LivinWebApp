@@ -111,3 +111,6 @@ registrationModalContainer?.addEventListener('click', eventPreventModalPropagati
 function eventPreventModalPropagation(event: MouseEvent) {
     event.stopPropagation();
 }
+
+// Check when we are about to leave the page
+addEventListener('beforeunload', userUnloadSession);

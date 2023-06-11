@@ -23,6 +23,25 @@
 | 5001   | El formato JSON de imagen de usuario es invalido           |
 | 6000   | reservado imagenes propiedades                             |
 | 7000   | No se puede obtener la localización en una sesión inválida |
+| 8000   | No se puede agregar la amenidad                            |
+| 8001   | No se puede actualizar la amenidad                         |
+| 8002   | No se puede eliminar la amenidad                           |
+| 8003   | No se puede agregar el status                              |
+| 8004   | No se puede actualizar el status                           |
+| 8005   | No se puede eliminar el status                             |
+| 8006   | No se puede agregar el tipo de propiedad                   |
+| 8007   | No se puede actualizar el tipo de propiedad                |
+| 8008   | No se puede eliminar el tipo de propiedad                  |
+| 8009   | No se puede agregar el uso de propiedad                    |
+| 8010   | No se puede actualizar el uso de propiedad                 |
+| 8011   | No se puede eliminar el uso de propiedad                   |
+| 8012   | No se puede insertar la propiedad                          |
+| 8013   | No se pueden actualizar los datos de la propiedad          |
+| 8014   | No se puede borrar la propiedad                            |
+| 8015   | No se puede obtener la informacion de la propiedad         |
+| 8016   | No se pueden obtener las propiedades del usuario           |
+| 8017   |                                                            |
+| 8018   |                                                            |
 
 
 

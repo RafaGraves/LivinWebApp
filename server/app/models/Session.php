@@ -33,6 +33,7 @@ class Session extends Model
         'usr_id' => '',
         'ip' => '',
         'userAgent' => '',
-        'csrf' => ''
+        'csrf' => '',
+        'active' => 1
     ];
 }

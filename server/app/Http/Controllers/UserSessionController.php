@@ -188,6 +188,7 @@ class UserSessionController extends Controller
                     ->update(['usr2_cel1' => $inputData['cel1']]);
             }
 
+
             if (array_key_exists('cel2', $inputData)) {
                 UserData::query()
                     ->where('id_usr', $currentSession['usr_id'])
@@ -241,6 +242,35 @@ class UserSessionController extends Controller
         } catch (Exception $e) {
             return response()->json(['status' => 5000, 'message' => 'Unknown session'], 422);
         }
+    }
+
+    function refresh()
+    {
+        // Create a restartable session
+        try {
+            $authTokenBearer = request()->header('Authorization');
+            $authToken = substr($authTokenBearer, 7, strlen($authTokenBearer));
+
+            $newCSRFToken =  Str::random(64);
+            // Modify expiration date
+            Session::query()
+                ->where('token', $authToken)
+                ->update(
+                    [
+                        'expire' => DB::raw('DATE_ADD(now(),interval 5 minutes)'),
+                        'csrf' => $newCSRFToken, // Regenerate a new CSRF token, this will effectively
+                        'active' => 0 // The session is not active
+                    ]); // Add five minutes to the session
+
+            return response()->json(['status' => 0, 'message' => '', 'token' => $newCSRFToken]);
+        } catch (Exception $e) {
+            return response()->json(['status' => 5000, 'message' => 'Unknown session'], 422);
+        }
+    }
+
+    function restore()
+    {
+
     }
 
 }

@@ -88,3 +88,4 @@ registrationModalContainer?.addEventListener('click', eventPreventModalPropagati
 function eventPreventModalPropagation(event) {
     event.stopPropagation();
 }
+addEventListener('beforeunload', userUnloadSession);
